@@ -1,0 +1,67 @@
+﻿@model List<PacientVM>
+
+<div class="card shadow border-0 my-4">
+    <div class="card-header bg-secondary bg-gradient ml-0 py-3">
+        <div class="row">
+            <div class="col-12 text-center">
+                <h2 class="text-white py-2">Lista Pacienti</h2>
+            </div>
+        </div>
+    </div>
+    <div class="card-body p-4">
+        <div class="row pb-3">
+            <div class="col-12 col-md-6">
+                <!-- Empty column to create space on larger screens -->
+            </div>
+            <div class="col-12 col-md-6 text-end">
+                <a asp-controller="Pacient" asp-action="Upsert" class="btn btn-primary">
+                    <i class="bi bi-plus-circle"></i>
+                    Adauga un Pacient
+                </a>
+            </div>
+        </div>
+
+        <div class="table-responsive">
+            <table id="tblData" class="table table-bordered table-striped">
+                <thead>
+                    <tr>
+                        <th> Nume </th>
+                        <th> Prenume </th>
+                        <th> CNP </th>
+                        <th> Adresa </th>
+                        <th> Asigurare </th>
+                        <th> Telefon </th>
+                        <th> Email </th>
+                        <th> Actiuni: </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (PacientVM pacientVM in Model.OrderBy(cat => cat.Pacient.PacientID))
+                    {
+                        <tr>
+                            <td> @pacientVM.Pacient.NumePacient </td>
+                            <td> @pacientVM.Pacient.PrenumePacient </td>
+                            <td> @pacientVM.Pacient.CNP </td>
+                            <td> @pacientVM.Pacient.Adresa </td>
+                            <td> @pacientVM.Pacient.Asigurare </td>
+                            <td> @pacientVM.NumarTelefon </td>
+                            <td> @pacientVM.Email </td>
+                            <td>
+                                <div class="d-flex justify-content-center">
+                                    <div class="w-75 btn-group">
+                                        <a asp-controller="Pacient" asp-action="Upsert" asp-route-id="@pacientVM.Pacient.PacientID" class="btn btn-primary mx-2">
+                                            <i class="bi bi-pencil-square"></i> Modifica
+                                        </a>
+                                        <a asp-controller="Pacient" asp-action="Delete" asp-route-id="@pacientVM.Pacient.PacientID" class="btn btn-danger mx-2">
+                                            <i class="bi bi-trash-fill"></i> Sterge
+                                        </a>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

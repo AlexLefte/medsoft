@@ -1,0 +1,137 @@
+﻿@using MedSoft.Utility
+@model ConsultatieVM
+
+<div class="card shadow border-0 my-4">
+    <div class="card-header bg-secondary bg-gradient ml-0 py-3">
+        <div class="row">
+            <div class="col-12 text-center">
+                <h2 class="text-white py-2"> Adauga Consultatie </h2>
+            </div>
+        </div>
+    </div>
+    <div class="card-body p-4">
+        <form method="post" class="row" enctype="multipart/form-data">
+            <input asp-for="Consultatie.ConsultatieID" hidden/>
+            <div class="row">
+                <div class="border p-3">
+                    <!-- <div asp-validation-summary="All"></div> -->
+                    @*<div asp-validation-summary="ModelOnly"></div>*@
+                    <div class="form-floating py-2 col-12">
+                        <select asp-for="Consultatie.Medic.SpecializareID" asp-items="@Model.ListaSpecializari" class="form-select border-0 shadow" id="specializareDropdown">
+                            @if (Model.Consultatie.ConsultatieID != 0)
+                            {
+                                foreach (var specializare in Model.ListaSpecializari)
+                                {
+                                    if (Model.Consultatie.Medic.SpecializareID.ToString() == specializare.Value)
+                                    {
+                                        specializare.Selected = true;
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                <option disabled selected>--Selecteaza Specializarea--</option>
+                            }                         
+                        </select>
+                        <label asp-for="Consultatie.Medic.Specializare" class="ms-2"></label>
+                        <span asp-validation-for="Consultatie.Medic.Specializare" class="text-danger"></span>
+                    </div>
+                    <div class="form-floating py-2 col-12">
+                        <select asp-for="Consultatie.MedicID" asp-items="@Model.ListaMedici" disabled class="form-select border-0 shadow" id="medicDropdown">
+                            @if (Model.Consultatie.ConsultatieID != 0)
+                            {
+                                foreach (var medic in Model.ListaMedici)
+                                {
+                                    if (Model.Consultatie.Medic.MedicID.ToString() == medic.Value)
+                                    {
+                                        medic.Selected = true;
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                <option disabled selected>--Selecteaza Medic--</option>
+                            }      
+                        </select>
+                        <label asp-for="Consultatie.Medic" class="ms-2"></label>
+                        <span asp-validation-for="Consultatie.MedicID" class="text-danger"></span>
+                    </div>
+                    <div class="form-floating py-2 col-12">
+                        <input asp-for="Data" type="date" disabled class="form-control border-0 shadow" id="dateInput"
+                               min="@DateTime.Now.AddDays(1).ToString("yyyy-MM-dd")" value="@DateTime.Now.AddDays(1).ToString("yyyy-MM-dd")" />
+                        <label asp-for="Data" class="ms-2"></label>
+                        <span asp-validation-for="Data" class="text-danger"></span>
+                    </div>
+                    <div class="form-floating py-2 col-12">
+                        <select asp-for="Ora" disabled class="form-select border-0 shadow" id="timeInput">
+                            <option disabled selected>--Selecteaza Ora--</option>
+                        </select>
+                        <label asp-for="Ora" class="ms-2">Ora</label>
+                        <span asp-validation-for="Ora" class="text-danger"></span>
+                    </div>
+                    <div class="form-floating py-2 col-12">
+                        <select asp-for="Consultatie.PacientID" asp-items="@Model.ListaPacienti" disabled class="form-select border-0 shadow" id="pacientDropdown">
+                            <option disabled selected>--Selecteaza Pacient--</option>
+                        </select>
+                        <label asp-for="Consultatie.PacientID" class="ms-2"></label>
+                        <span asp-validation-for="Consultatie.PacientID" class="text-danger"></span>
+                    </div>  
+                    <div class="form-floating py-2 col-12">
+                        <select asp-for="Consultatie.Status" asp-items="@SD.GetConsultStatusStrings()" disabled class="form-select border-0 shadow" id="statusDropdown">
+                            <option disabled selected>--Selecteaza Status--</option>
+                        </select>
+                        <label asp-for="Consultatie.Status" class="ms-2"></label>
+                        <span asp-validation-for="Consultatie.Status" class="text-danger"></span>
+                    </div>
+                    <div class="form-floating py-2 col-12">
+                        <input asp-for="Consultatie.Diagnostic" disabled class="form-control" autocomplete="diagnostic" id="diagnostic" />
+                        <label asp-for="Consultatie.Diagnostic" class="ms-2">Diagnostic</label>
+                        <span asp-validation-for="Consultatie.Diagnostic" class="text-danger"></span>
+                    </div>
+                    <div class="form-floating py-2 col-12">
+                        <select asp-for="Consultatie.MedicamentID" asp-items="@Model.ListaMedicamente" disabled class="form-select border-0 shadow" id="medicamentDropdown">
+                            <option disabled selected>--Selecteaza Medicament--</option>
+                        </select>
+                        <label asp-for="Consultatie.Medicamente" class="ms-2"></label>
+                        <span asp-validation-for="Consultatie.MedicamentID" class="text-danger"></span>
+                    </div>
+                    <div class="form-floating py-2 col-12">
+                        <input asp-for="Consultatie.Doza" type="text" disabled class="form-control border-0 shadow" placeholder="Doza" id="doza" />
+                        <label asp-for="Consultatie.Doza" class="ms-2"></label>
+                        <span asp-validation-for="Consultatie.Doza" class="text-danger"></span>
+                    </div>
+                    <div class="row py-2">
+                        <div class="col-6 col-md-3">
+                            <button type="submit" class="btn btn-primary form-control"> Adauga </button>
+                        </div>
+                        <div class="col-6 col-md-3">
+                            <a asp-controller="Consultatie" asp-action="Index" class="btn btn-outline-primary border form-control">
+                                Inapoi catre Consultatii
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+    tinymce.init({
+      selector: 'textarea',
+      plugins: 'anchor autolink charmap codesample emoticons table visualblocks wordcount checklist lists mediaembed casechange export formatpainter pageembed linkchecker a11ychecker tinymcespellchecker permanentpen powerpaste advtable advcode editimage tinycomments tableofcontents footnotes mergetags autocorrect typography inlinecss',
+      toolbar: 'undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | addcomment showcomments | spellcheckdialog a11ycheck typography | align lineheight | checklist numlist bullist indent outdent | emoticons charmap | removeformat',
+      tinycomments_mode: 'embedded',
+      tinycomments_author: 'Author name',
+      mergetags_list: [
+        { value: 'First.Name', title: 'First Name' },
+        { value: 'Email', title: 'Email' },
+      ]
+    });
+    </script>
+    @{
+        <partial name="_ValidationScriptsPartial"/>
+    }
+    <script src="~/js/consultatie.js"></script>
+}

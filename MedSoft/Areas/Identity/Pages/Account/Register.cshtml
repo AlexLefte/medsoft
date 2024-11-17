@@ -1,0 +1,120 @@
+﻿@page
+@model RegisterModel
+
+<div class="card shadow border-0 my-rem-4">
+    <div class="card-header bg-secondary bg-gradient m-lg-0 py-4">
+        <div class="row">
+            <div class="col-12 text-center">
+                <h2 class="py-2 text-white">Inregistrare</h2>
+            </div>
+        </div>
+    </div>
+    <div class="card-body p-4">
+        <div class="row pt-3">
+            <div class="col-md-12">
+                <form id="registerForm" class="row" asp-route-returnUrl="@Model.ReturnUrl" method="post" enctype="multipart/form-data">
+                    <h3 class="border-bottom pb-3 mb-4 text-secondary text-center">Creeaza un nou cont.</h3>
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                    <div class="form-floating col-md-12">
+                        <input asp-for="Input.Email" class="form-control" autocomplete="email" aria-required="true" />
+                        <label asp-for="Input.Email" class="ms-2 text-muted">Email</label>
+                        <span asp-validation-for="Input.Email" class="text-danger"></span>
+                    </div>
+                    <div class="form-floating my-3 col-md-6">
+                        <input asp-for="Input.Nume" class="form-control" autocomplete="name" aria-required="true" />
+                        <label asp-for="Input.Nume" class="ms-2 text-muted">Nume</label>
+                        <span asp-validation-for="Input.Nume" class="text-danger"></span>
+                    </div>
+                    <div class="form-floating my-3 col-md-6">
+                        <input asp-for="Input.Prenume" class="form-control" autocomplete="name" aria-required="true" />
+                        <label asp-for="Input.Prenume" class="ms-2 text-muted">Prenume</label>
+                        <span asp-validation-for="Input.Prenume" class="text-danger"></span>
+                    </div>
+                    <div class="form-floating my-3 col-md-6">
+                        <input asp-for="Input.NumarTelefon" class="form-control" autocomplete="phone-number" aria-required="true" />
+                        <label asp-for="Input.NumarTelefon" class="ms-2 text-muted">Numar de telefon</label>
+                        <span asp-validation-for="Input.NumarTelefon" class="text-danger"></span>
+                    </div>
+                    <div class="form-floating my-3 col-md-6">
+                        <input asp-for="Input.Adresa" class="form-control" autocomplete="address" aria-required="true" />
+                        <label asp-for="Input.Adresa" class="ms-2 text-muted">Adresa</label>
+                        <span asp-validation-for="Input.Adresa" class="text-danger"></span>
+                    </div>
+                    <div class="form-floating my-3 col-md-6">
+                        <input asp-for="Input.Password" class="form-control" autocomplete="new-password" aria-required="true" />
+                        <label asp-for="Input.Password" class="ms-2 text-muted">Parola</label>
+                        <span asp-validation-for="Input.Password" class="text-danger"></span>
+                    </div>
+                    <div class="form-floating my-3 col-md-6">
+                        <input asp-for="Input.ConfirmPassword" class="form-control" autocomplete="new-password" aria-required="true" />
+                        <label asp-for="Input.ConfirmPassword" class="ms-2 text-muted">Confirma Parola</label>
+                        <span asp-validation-for="Input.ConfirmPassword" class="text-danger"></span>
+                    </div>   
+                    <div class="form-floating my-3 col-md-6">
+                        <input asp-for="Input.CNP" class="form-control" autocomplete="cnp" aria-required="true" />
+                        <label asp-for="Input.CNP" class="ms-2 text-muted">CNP</label>
+                        <span asp-validation-for="Input.CNP" class="text-danger"></span>
+                    </div>
+                    <div class="form-floating mb-3 col-md-6">
+                        <select asp-for="Input.Role" asp-items="@Model.Input.RoleList" class="form-select">
+                            <option disabled selected>--Select Role--</option>
+                        </select>
+                        <label asp-for="Input.Role" class="ms-2 text-muted"> Role</label>
+                    </div>
+                    <div id="pacient_div" class="form-floating my-3 col-md-6" style="display:none;">
+                        <input asp-for="Input.Asigurare" class="form-control" autocomplete="asigurare" aria-required="true"/>
+                        <label asp-for="Input.Asigurare" class="ms-2 text-muted">Valoare Asigurare</label>
+                        <span asp-validation-for="Input.Asigurare" class="text-danger"></span>
+                    </div>
+                    <div class="form-floating my-3 col-md-6" id="pretConsultatie" style="display: none;">
+                        <input asp-for="Input.PretConsultatie" class="form-control" autocomplete="pret-consultatie" aria-required="true"/>
+                        <label asp-for="Input.PretConsultatie" class="ms-2 text-muted">Pret Consultatie</label>
+                        <span asp-validation-for="Input.PretConsultatie" class="text-danger"></span>
+                    </div>
+                    <div class="form-floating mb-3 col-md-6" id="specializare" style="display: none;">
+                        <select asp-for="Input.Specializare" asp-items="@Model.Input.ListaSpecializari" class="form-select">
+                            <option disabled selected>--Selecteaza Specializarea--</option>
+                        </select>
+                        <label asp-for="Input.Specializare" class="ms-2 text-muted">Specializare</label>
+                    </div>
+                    <div class="form-floating py-2 col-12" id="imageUrl" style="display: none;">
+                        <input type="file" name="file"  class="form-control border-0 shadow" placeholder="Imagine" lang="en-gb"/>
+                        <label asp-for="Input.ImageUrl" class="ms-2">Imagine</label>
+                    </div>
+                    <div class="col-12">
+                        <button id="registerSubmit" type="submit" class="w-100 btn btn-lg btn-primary mt-2">Register</button>
+                    </div>           
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+        $(document).ready(function () {
+            $('#Input_Role').change(function() {
+                var selection = $('#Input_Role Option:Selected').text();
+                if (selection == "Medic") {
+                    $('#specializare').show();
+                    $('#pretConsultatie').show();
+                    $('#imageUrl').show();
+                }
+                else {
+                    $('#specializare').hide();
+                    $('#pretConsultatie').hide();
+                    $('#imageUrl').hide();
+                }
+
+                if (selection == "Pacient") {
+                    $('#pacient_div').show();
+                }
+                else {
+                    $('#pacient_div').hide();
+                }
+            })
+        })
+    </script>
+}

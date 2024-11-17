@@ -1,0 +1,76 @@
+﻿@model IEnumerable<Medic>
+
+@{
+    var listaSpecializari = ViewData["ListaSpecializari"] as IEnumerable<SelectListItem>;
+    var isUserInMedicRole = User.IsInRole("Medic");
+}
+
+<div class="row pb-3 my-4">
+    <div class="row pb-3">
+        <div class="dropdown">
+            <button class="btn btn-primary dropdown-toggle" type="button" id="statusDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                Specializare Medic
+            </button>
+            <ul class="dropdown-menu" aria-labelledby="statusDropdown">
+                <a style="text-decoration:none;" asp-controller="Home" asp-action="Index" asp-route-specializare="">
+                    <li class="dropdown-item @(!listaSpecializari.Any(s => s.Selected) ? "active text-white bg-primary" : "")">Toate</li>
+                </a>
+                @if (listaSpecializari != null)
+                {
+                    @foreach (SelectListItem s in listaSpecializari)
+                    {
+                        <a style="text-decoration:none;" asp-controller="Home" asp-action="Index" asp-route-specializare=@s.Value>
+                            <li class="dropdown-item @(s.Selected ? "active text-white bg-primary" : "")">@s.Text</li>
+                        </a>
+                    }
+                }
+            </ul>
+        </div>
+    </div>
+    @foreach(var medic in Model)
+    {
+        <div class="col-lg-3 col-sm-6">           
+            <div class="row p-2">
+                <div class="col-12 p-1">
+                    <div class="card border-0 p-3 shadow border-top border-5 rounded">
+                        <img src="@medic.ImageUrl" height="400" width="400" class="card-img-top rounded" style="object-fit: contain;" />
+                        <div class="card-body pb-0">
+                            <div class="card-body pl-1">
+                                <p class="card-title h5 text-dark opacity-75 text-uppercase text-center">@medic.NumeSpecializare</p>
+                                <p class="card-title text-warning text-center"><b>@medic.NumeComplet</b></p>
+                            </div>
+                            <div class="pl-1">
+                                <p class="text-dark text-opacity-75 text-center">
+                                    Specializare:
+                                    <span>
+                                        @medic.Specializare.Nume
+                                    </span>
+                                </p>
+                            </div>
+                            <div class="pl-1">
+                                <p class="text-dark text-opacity-75 text-center">
+                                    Pret consultatie: 
+                                    <span>
+                                        @medic.PretConsultatie.ToString("c", new System.Globalization.CultureInfo("ro-RO"))
+                                    </span>
+                                </p>
+                            </div>
+                        </div>
+                        @if (!isUserInMedicRole)
+                        {
+                            <div>
+                                <a asp-area=@(User.IsInRole("Admin") ? "Admin" : "Pacient")
+                                   asp-controller="Consultatie"
+                                   asp-action="Add"
+                                   asp-route-medicID="@medic.MedicID"
+                                   class="btn btn-primary bg-gradient border-0 form-control">
+                                    Programeaza
+                                </a>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+</div>

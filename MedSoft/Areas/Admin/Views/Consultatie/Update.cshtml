@@ -1,0 +1,134 @@
+﻿@using MedSoft.Utility
+@model ConsultatieVM
+
+<div class="card shadow border-0 my-4">
+    <div class="card-header bg-secondary bg-gradient ml-0 py-3">
+        <div class="row">
+            <div class="col-12 text-center">
+                <h2 class="text-white py-2"> Actualizeaza Consultatia </h2>
+            </div>
+        </div>
+    </div>
+    <div class="card-body p-4">
+        <form method="post" class="row" enctype="multipart/form-data">
+            <input asp-for="Consultatie.ConsultatieID" hidden/>
+            <div class="row">
+                <div class="border p-3">
+                    <!-- <div asp-validation-summary="All"></div> -->
+                    @*<div asp-validation-summary="ModelOnly"></div>*@
+                    <div class="form-floating py-2 col-12">
+                        <select asp-for="Consultatie.Medic.SpecializareID" asp-items="@Model.ListaSpecializari" class="form-select border-0 shadow" >
+                            @foreach (var specializare in Model.ListaSpecializari)
+                            {
+                                if (Model.Consultatie.Medic.SpecializareID.ToString() == specializare.Value)
+                                {
+                                    specializare.Selected = true;
+                                }
+                            }                    
+                        </select>
+                        <label asp-for="Consultatie.Medic.SpecializareID" class="ms-2">Specializare</label>
+                        <span asp-validation-for="Consultatie.Medic.SpecializareID" class="text-danger"></span>
+                    </div>
+                    <div class="form-floating py-2 col-12">
+                        <select asp-for="Consultatie.MedicID" asp-items="@Model.ListaMedici" class="form-select border-0 shadow" id="medicDropdown">
+                            @foreach (var medic in Model.ListaMedici)
+                            {
+                                if (Model.Consultatie.Medic.MedicID.ToString() == medic.Value)
+                                {
+                                    medic.Selected = true;
+                                }
+                            }                                 
+                        </select>
+                        <label asp-for="Consultatie.MedicID" class="ms-2">Medic</label>
+                        <span asp-validation-for="Consultatie.MedicID" class="text-danger"></span>
+                    </div>
+                    <div class="form-floating py-2 col-12">
+                        <input asp-for="Data" type="date" class="form-control border-0 shadow" min="@DateTime.Now.AddDays(1).ToString("yyyy-MM-dd")" value="@Model.Data.ToString("yyyy-MM-dd")" id="dateInput"/>
+                        <label asp-for="Data" class="ms-2"></label>
+                        <span asp-validation-for="Data" class="text-danger"></span>
+                    </div>
+                    <div class="form-floating py-2 col-12">
+                        <select asp-for="Ora" asp-items="@Model.ListaIntervaleOrare" class="form-select border-0 shadow" id="timeInput">  
+                            @foreach (var ora in Model.ListaIntervaleOrare)
+                            {
+                                if (Model.Ora == ora.Value)
+                                {
+                                    ora.Selected = true;
+                                }
+                            }
+                        </select>
+                        <label asp-for="Ora" class="ms-2">Ora</label>
+                        <span asp-validation-for="Ora" class="text-danger"></span>
+                    </div>
+                    <div class="form-floating py-2 col-12">
+                        <select asp-for="Consultatie.PacientID" asp-items="@Model.ListaPacienti" class="form-select border-0 shadow" >
+                            @foreach (var pacient in Model.ListaPacienti)
+                            {
+                                if (Model.Consultatie.Pacient.PacientID.ToString() == pacient.Value)
+                                {
+                                    pacient.Selected = true;
+                                }
+                            }
+                        </select>
+                        <label asp-for="Consultatie.Pacient" class="ms-2"></label>
+                        <span asp-validation-for="Consultatie.PacientID" class="text-danger"></span>
+                    </div>  
+                    <div class="form-floating py-2 col-12">
+                        <select asp-for="Consultatie.Status" asp-items="@SD.GetConsultStatusStrings()" class="form-select border-0 shadow" id="statusDropdown">
+                        </select>
+                        <label asp-for="Consultatie.Status" class="ms-2"></label>
+                        <span asp-validation-for="Consultatie.Status" class="text-danger"></span>
+                    </div>
+                    <div class="form-floating py-2 col-12">
+                        <input asp-for="Consultatie.Diagnostic" disabled=@(Model.Consultatie.Status != "Finalizata") class="form-control" autocomplete="diagnostic" id="diagnostic" />
+                        <label asp-for="Consultatie.Diagnostic" class="ms-2">Diagnostic</label>
+                        <span asp-validation-for="Consultatie.Diagnostic" class="text-danger"></span>
+                    </div>
+                    <div class="form-floating py-2 col-12">
+                        <select asp-for="Consultatie.MedicamentID" asp-items="@Model.ListaMedicamente" disabled=@(Model.Consultatie.Status != "Finalizata") class="form-select border-0 shadow" id="medicamentDropdown">
+                            <option disabled selected>--Selecteaza Medicament--</option>
+                        </select>
+                        <label asp-for="Consultatie.Medicamente" class="ms-2"></label>
+                        <span asp-validation-for="Consultatie.MedicamentID" class="text-danger"></span>
+                    </div>
+                    <div class="form-floating py-2 col-12">
+                        <input asp-for="Consultatie.Doza" type="text" disabled=@(Model.Consultatie.Status != "Finalizata") class="form-control border-0 shadow" placeholder="Doza" id="doza" />
+                        <label asp-for="Consultatie.Doza" class="ms-2"></label>
+                        <span asp-validation-for="Consultatie.Doza" class="text-danger"></span>
+                    </div>
+                    <div class="row py-2">
+                        <div class="col-6 col-md-3">
+                            <button type="submit" class="btn btn-primary form-control"> Modifica </button>                          
+                        </div>
+                        <div class="col-6 col-md-3">
+                            <a asp-controller="Consultatie" asp-action="Index" class="btn btn-outline-primary border form-control">
+                                Inapoi catre Consultatii
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+<input type="hidden" id="consultatieID" value="@Model.Consultatie.ConsultatieID" />
+
+@section Scripts {
+    <script>
+    tinymce.init({
+      selector: 'textarea',
+      plugins: 'anchor autolink charmap codesample emoticons table visualblocks wordcount checklist lists mediaembed casechange export formatpainter pageembed linkchecker a11ychecker tinymcespellchecker permanentpen powerpaste advtable advcode editimage tinycomments tableofcontents footnotes mergetags autocorrect typography inlinecss',
+      toolbar: 'undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | addcomment showcomments | spellcheckdialog a11ycheck typography | align lineheight | checklist numlist bullist indent outdent | emoticons charmap | removeformat',
+      tinycomments_mode: 'embedded',
+      tinycomments_author: 'Author name',
+      mergetags_list: [
+        { value: 'First.Name', title: 'First Name' },
+        { value: 'Email', title: 'Email' },
+      ]
+    });
+    </script>
+    @{
+        <partial name="_ValidationScriptsPartial"/>
+    }
+    <script src="~/js/consultatie.js"></script>
+}

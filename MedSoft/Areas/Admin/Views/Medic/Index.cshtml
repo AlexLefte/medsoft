@@ -1,0 +1,81 @@
+﻿@model List<MedicVM>
+
+<div class="card shadow border-0 my-4">
+    <div class="card-header bg-secondary bg-gradient ml-0 py-3">
+        <div class="row">
+            <div class="col-12 text-center">
+                <h2 class="text-white py-2">Lista Medici</h2>
+            </div>
+        </div>
+    </div>
+    <div class="card-body p-4">
+        <div class="row pb-3">
+            <div class="col-12 col-md-6">
+                <!-- Empty column to create space on larger screens -->
+            </div>
+            <div class="col-12 col-md-6 text-end">
+                <a asp-controller="Medic" asp-action="Upsert" class="btn btn-primary">
+                    <i class="bi bi-plus-circle"></i>
+                    Adauga un Medic
+                </a>
+            </div>
+        </div>
+
+        <div class="table-responsive">
+            <table id="tblData" class="table table-bordered table-striped">
+                <thead>
+                    <tr>
+                        <th> Nume </th>
+                        <th> Prenume </th>
+                        <th> CNP </th>
+                        <th> Adresa </th>
+                        <th> Telefon </th>
+                        <th> Email </th>
+                        <th> Specializare </th>
+                        <th> Pret Consultatie (RON) </th>
+                        <th> Actiuni: </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (MedicVM medicVM in Model.OrderBy(cat => cat.Medic.MedicID))
+                    {
+                        <tr>
+                            <td> @medicVM.Medic.NumeMedic </td>
+                            <td> @medicVM.Medic.PrenumeMedic </td>
+                            <td> @medicVM.Medic.CNP </td>
+                            <td> @medicVM.Medic.Adresa </td>
+                            <td> @medicVM.NumarTelefon </td>
+                            <td> @medicVM.Email </td>
+                            <td>
+                                @foreach (var specializare in medicVM.ListaSpecializari)
+                                {
+                                    if (medicVM.Medic.SpecializareID.ToString() == specializare.Value)
+                                    {
+                                        @specializare.Text
+                                    }
+                                }
+                            </td>
+                            <td> @medicVM.Medic.PretConsultatie </td>
+                            <td>
+                                <div class="d-flex justify-content-center">
+                                    <div class="w-75 btn-group">
+                                        <a asp-controller="Medic" asp-action="Upsert" asp-route-id="@medicVM.Medic.MedicID" class="btn btn-primary mx-2">
+                                            <i class="bi bi-pencil-square"></i> Modifica
+                                        </a>
+                                        <a asp-controller="Medic" asp-action="Delete" asp-route-id="@medicVM.Medic.MedicID" class="btn btn-danger mx-2">
+                                            <i class="bi bi-trash-fill"></i> Sterge
+                                        </a>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="~/js/medic.js"></script>
+}

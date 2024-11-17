@@ -1,0 +1,144 @@
+﻿@model MedicVM
+
+<div class="card shadow border-0 my-4">
+    <div class="card-header bg-secondary bg-gradient ml-0 py-3">
+        <div class="row">
+            <div class="col-12 text-center">
+                <h2 class="text-white py-2">@(Model.Medic.MedicID != null ? "Modifica" : "Adauga") Medic</h2>
+            </div>
+        </div>
+    </div>
+    <div class="card-body p-4">
+        <form method="post" class="row" enctype="multipart/form-data">
+            <input asp-for="Medic.MedicID" hidden />
+            <input asp-for="Medic.ImageUrl" hidden />
+            <div class="row">
+                <div class="col-10">
+                    <div class="border p-3">
+                        <!-- <div asp-validation-summary="All"></div> -->
+                        @*<div asp-validation-summary="ModelOnly"></div>*@
+                        <div class="form-floating py-2 col-12">
+                            <input asp-for="Medic.NumeMedic" type="text" class="form-control border-0 shadow" placeholder="Name" />
+                            <label asp-for="Medic.NumeMedic" class="ms-2"></label>
+                            <span asp-validation-for="Medic.NumeMedic" class="text-danger"></span>
+                        </div>
+                        <div class="form-floating py-2 col-12">
+                            <input asp-for="Medic.PrenumeMedic" type="text" class="form-control border-0 shadow" placeholder="Name" />
+                            <label asp-for="Medic.PrenumeMedic" class="ms-2"></label>
+                            <span asp-validation-for="Medic.PrenumeMedic" class="text-danger"></span>
+                        </div>
+                        <div class="form-floating py-2 col-12">
+                            <input asp-for="Medic.CNP" class="form-control border-0 shadow" placeholder="" />
+                            <label asp-for="Medic.CNP" class="ms-2"></label>
+                            <span asp-validation-for="Medic.CNP" class="text-danger"></span>
+                        </div>
+                        <div class="form-floating py-2 col-12">
+                            <input asp-for="Email" class="form-control border-0 shadow" placeholder="" />
+                            <label asp-for="Email" class="ms-2"></label>
+                            <span asp-validation-for="Email" class="text-danger"></span>
+                        </div>
+                        <div class="form-floating py-2 col-12">
+                            <input asp-for="NumarTelefon" class="form-control border-0 shadow" placeholder="" />
+                            <label asp-for="NumarTelefon" class="ms-2"></label>
+                            <span asp-validation-for="NumarTelefon" class="text-danger"></span>
+                        </div>
+                        <div class="form-floating py-2 col-12">
+                            <input asp-for="NewPassword" type="password" class="form-control border-0 shadow" lang="en-gb" placeholder="" />
+                            <label asp-for="NewPassword" class="ms-2">
+                                @{
+                                    if (Model.Medic.MedicID != null)
+                                    {
+                                        <text>Parola Noua</text>
+                                    }
+                                    else
+                                    {
+                                        <text>Parola</text>
+                                    }
+                                }
+                            </label>
+                            <span asp-validation-for="NewPassword" class="text-danger"></span>
+                        </div>
+                        <div class="form-floating py-2 col-12">
+                            <input asp-for="ConfirmNewPassword" type="password" class="form-control border-0 shadow" lang="en-gb" placeholder="" />
+                            <label asp-for="ConfirmNewPassword" class="ms-2">Confirma Parola</label>
+                            <span asp-validation-for="ConfirmNewPassword" class="text-danger"></span>
+                        </div>
+                        <div class="form-floating py-2 col-12">
+                            <input asp-for="Medic.Adresa" class="form-control border-0 shadow" placeholder="" />
+                            <label asp-for="Medic.Adresa" class="ms-2"></label>
+                            <span asp-validation-for="Medic.Adresa" class="text-danger"></span>
+                        </div>
+                        <div class="form-floating py-2 col-12">
+                            <input asp-for="Medic.PretConsultatie" class="form-control border-0 shadow" placeholder="" />
+                            <label asp-for="Medic.PretConsultatie" class="ms-2"></label>
+                            <span asp-validation-for="Medic.PretConsultatie" class="text-danger"></span>
+                        </div>
+                        <div class="form-floating mb-3 col-md-6" id="specializare">
+                            <select asp-for="Medic.SpecializareID" asp-items="@Model.ListaSpecializari" class="form-select">
+                                @if (Model.Medic.MedicID != null)
+                                {
+                                    foreach (var specializare in Model.ListaSpecializari)
+                                    {
+                                        if (Model.Medic.SpecializareID.ToString() == specializare.Value)
+                                        {
+                                            specializare.Selected = true;
+                                        }
+                                    }
+                                }
+                                else
+                                {
+                                    <option disabled selected>--Selecteaza Specializarea--</option>
+                                }                               
+                            </select>
+                            <label asp-for="Medic.SpecializareID" class="ms-2 text-muted">Specializare</label>
+                        </div>
+                        <div class="form-floating py-2 col-12">
+                            <input type="file" name="file" class="form-control border-0 shadow" placeholder="" lang="en-gb" />
+                            <label asp-for="Medic.ImageUrl" class="ms-2"></label>
+                        </div>
+                        <div class="row py-2">
+                            <div class="col-6 col-md-3">
+                                @if (Model.Medic.MedicID != null)
+                                {
+                                    <button type="submit" class="btn btn-primary form-control"> Modifica </button>
+                                }
+                                else
+                                {
+                                    <button type="submit" class="btn btn-primary form-control"> Adauga </button>
+                                }
+                            </div>
+                            <div class="col-6 col-md-3">
+                                <a asp-controller="Medic" asp-action="Index" class="btn btn-outline-primary border form-control">
+                                    Inapoi la Medici
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-2">
+                    <img src="@Model.Medic.ImageUrl" width="100%"
+                         style="border-radius:5px; border:1px solid #bbb9b9" />
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        tinymce.init({
+            selector: 'textarea',
+            plugins: 'anchor autolink charmap codesample emoticons table visualblocks wordcount checklist lists mediaembed casechange export formatpainter pageembed linkchecker a11ychecker tinymcespellchecker permanentpen powerpaste advtable advcode editimage tinycomments tableofcontents footnotes mergetags autocorrect typography inlinecss',
+            toolbar: 'undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | addcomment showcomments | spellcheckdialog a11ycheck typography | align lineheight | checklist numlist bullist indent outdent | emoticons charmap | removeformat',
+            tinycomments_mode: 'embedded',
+            tinycomments_author: 'Author name',
+            mergetags_list: [
+                { value: 'First.Name', title: 'First Name' },
+                { value: 'Email', title: 'Email' },
+            ]
+        });
+    </script>
+    @{
+        <partial name="_ValidationScriptsPartial" />
+    }
+}

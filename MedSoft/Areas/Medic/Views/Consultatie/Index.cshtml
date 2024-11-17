@@ -1,0 +1,160 @@
+﻿@model IEnumerable<ConsultatieVM> 
+
+@{
+    var status = ViewData["Status"]; ;
+    var pending = "text-primary";
+    var confirmed = "text-primary";
+    var completed = "text-primary";
+    var cancelled = "text-primary";
+    var all = "text-primary";
+
+    switch (status)
+    {
+        case SD.ConsultStatusPending:
+            pending = "active text-white bg-primary";
+            break;
+        case SD.ConsultStatusApproved:
+            confirmed = "active text-white bg-primary";
+            break;
+        case SD.ConsultStatusCompleted:
+            completed = "active text-white bg-primary";
+            break;
+        case SD.ConsultStatusCanceled:
+            cancelled = "active text-white bg-primary";
+            break;
+        default:
+            all = "active text-white bg-primary";
+            break;
+    }
+}
+
+<div class="card shadow border-0 my-4 mb-4">
+    <div class="card-header bg-secondary bg-gradient ml-0 py-3">
+        <div class="row">
+            <div class="col-12 text-center">
+                <h2 class="text-white py-2">Consultatii</h2>
+            </div>
+        </div>
+    </div>
+    <div class="card-body">
+        <div class="row pb-3">
+            <div class="col-6">
+                <div class="dropdown mx-4">
+                    <button class="btn btn-primary dropdown-toggle" type="button" id="statusDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                        Status Consultatie
+                    </button>
+                    <ul class="dropdown-menu" aria-labelledby="statusDropdown">
+                        <a style="text-decoration:none;" asp-controller="Consultatie" asp-action="Index" asp-route-status="">
+                            <li class="dropdown-item @all">Toate</li>
+                        </a>
+                        <a style="text-decoration:none;" asp-controller="Consultatie" asp-action="Index" asp-route-status=@SD.ConsultStatusPending>
+                            <li class="dropdown-item @pending">In Asteptare</li>
+                        </a>
+                        <a style="text-decoration:none;" asp-controller="Consultatie" asp-action="Index" asp-route-status=@SD.ConsultStatusApproved>
+                            <li class="dropdown-item @confirmed">Confirmata</li>
+                        </a>
+                        <a style="text-decoration:none;" asp-controller="Consultatie" asp-action="Index" asp-route-status=@SD.ConsultStatusCompleted>
+                            <li class="dropdown-item @completed">Finalizata</li>
+                        </a>
+                        <a style="text-decoration:none;" asp-controller="Consultatie" asp-action="Index" asp-route-status=@SD.ConsultStatusCanceled>
+                            <li class="dropdown-item @cancelled">Anulata</li>
+                        </a>                 
+                    </ul>
+                </div>
+            </div>
+            <div class="col-6 text-end">         
+            </div>
+        </div>
+        <div class="card-body p-4">           
+            <div class="table-responsive">
+                <table id="tblData" class="table table-bordered table-striped" style="width:100%">
+                    <thead>
+                        <tr>
+                            <th style="min-width:75px"> Data </th>    
+                            <th style="min-width:75px"> Ora </th>
+                            <th> Nume Pacient </th>
+                            <th> Prenume Pacient </th>
+                            <th> Nume Medic </th>
+                            <th> Prenume Medic </th>
+                            <th> Specializare </th>
+                            <th> Pret Consultatie </th>
+                            <th> Diagnostic </th>
+                            <th> Medicament </th>
+                            <th> Doza </th>
+                            <th> Status </th>
+                            <th> Actiuni </th>
+                        </tr>
+                    </thead>   
+                    <tbody>
+                        @foreach (ConsultatieVM consultatieVM in Model.OrderBy(cons => cons.Consultatie.Data))
+                        {
+                            <tr>
+                                <td> @consultatieVM.Consultatie.Data.ToString("dd-MM-yyyy") </td>
+                                <td> @consultatieVM.Consultatie.Data.ToString("HH-mm") </td>
+                                <td> @consultatieVM.Consultatie.Pacient.NumePacient </td>
+                                <td> @consultatieVM.Consultatie.Pacient.PrenumePacient </td>
+                                <td> @consultatieVM.Consultatie.Medic.NumeMedic </td>
+                                <td> @consultatieVM.Consultatie.Medic.PrenumeMedic </td>
+                                <td>
+                                    @foreach (var specializare in consultatieVM.ListaSpecializari)
+                                    {
+                                        if (consultatieVM.Consultatie.Medic.SpecializareID.ToString() == specializare.Value)
+                                        {
+                                            @specializare.Text
+                                        }
+                                    }
+                                </td>
+                                <td> @consultatieVM.Consultatie.Medic.PretConsultatie </td>
+                                <td> @(consultatieVM.Consultatie.Diagnostic == null ? "-" : consultatieVM.Consultatie.Diagnostic) </td>
+                                <td> @(consultatieVM.Consultatie.Medicamente?.Denumire == null ? "-" : consultatieVM.Consultatie.Medicamente.Denumire) </td>
+                                <td> @(consultatieVM.Consultatie.Doza == null ? "-" : consultatieVM.Consultatie.Doza) </td>
+                                <td> @consultatieVM.Consultatie.Status </td>
+                                <td class="align-middle">
+                                    @if (consultatieVM.Consultatie.Status == SD.ConsultStatusCanceled)
+                                    {
+                                        
+                                    }
+                                    else if (consultatieVM.Consultatie.Status == SD.ConsultStatusCompleted)
+                                    {
+                                        <div class="d-flex justify-content-center align-items-center h-100">
+                                            <a asp-controller="Consultatie" asp-action="Complete" asp-route-id="@consultatieVM.Consultatie.ConsultatieID" class="btn btn-primary"
+                                               style="height: 65px; display: flex; align-items: center; justify-content: center;" >
+                                                <i class="bi bi-pencil-square" style="margin-right: 8px;"></i> @(consultatieVM.Consultatie.Status == SD.ConsultStatusApproved ? "Finalizeaza" : "Modifica")
+                                            </a>
+                                        </div>
+                                    }
+                                    else
+                                    {
+                                        <div class="w-75 btn-group">
+                                            @if (consultatieVM.Consultatie.Status == SD.ConsultStatusPending)
+                                            {
+                                                <a asp-controller="Consultatie" 
+                                                    asp-action="ChangeStatus"
+                                                    asp-route-id="@consultatieVM.Consultatie.ConsultatieID"
+                                                    asp-route-status=@SD.ConsultStatusApproved
+                                                    class="btn btn-primary mx-2">
+                                                    <i class=" bi bi-check-square" style="margin-right: 8px;"></i>Confirma
+                                                </a>
+                                            }
+                                            else
+                                            {
+                                                <a asp-controller="Consultatie" asp-action="Complete" asp-route-id="@consultatieVM.Consultatie.ConsultatieID" class="btn btn-primary mx-2"
+                                                   style="height: 65px; display: flex; align-items: center; justify-content: center;" >
+                                                    <i class="bi bi-pencil-square" style="margin-right: 8px;"></i> @(consultatieVM.Consultatie.Status == SD.ConsultStatusApproved ? "Finalizeaza" : "Modifica")
+                                                </a>
+                                            }
+                                            <a asp-controller="Consultatie" asp-action="ChangeStatus" asp-route-id="@consultatieVM.Consultatie.ConsultatieID" asp-route-status=@SD.ConsultStatusCanceled class ="btn btn-danger mx-2"
+                                               style="height: 65px; display: flex; align-items: center; justify-content: center;" >
+                                                <i class="bi bi-trash-fill" style="margin-right: 8px;"></i> Anuleaza
+                                            </a>
+                                        </div>
+                                    }                                   
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
